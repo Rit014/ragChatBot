@@ -35,28 +35,34 @@ function buildAggragationPipeline(queryEmbedding) {
 }
 
 async function getAnswerFromLLM(query, context) {
-    const maxAttempts = 4;
+    const models = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
+    const maxAttempts = 3;
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-            const response = await ai.models.generateContent({
-                model: "gemini-3.8-flash",
-                contents: `Context:\n${context}\n\nQuestion: ${query}`,
-                config: {
-                    systemInstruction:
-                        "You are a helpful assistant that answers questions based only on the provided context.",
-                },
-            });
-            return response.text;
-        } catch (error) {
-            if (error.status === 503 && attempt < maxAttempts) {
-                console.log(`Model busy, retrying (${attempt}/${maxAttempts - 1})...`);
-                await new Promise((r) => setTimeout(r, attempt * 2000));
-            } else {
-                throw error;
+    for (const model of models) {
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const response = await ai.models.generateContent({
+                    model,
+                    contents: `Context:\n${context}\n\nQuestion: ${query}`,
+                    config: {
+                        systemInstruction:
+                            "You are a helpful assistant that answers questions based only on the provided context.",
+                    },
+                });
+                return response.text;
+            } catch (error) {
+                const retryable = error.status === 503 || error.status === 429;
+                if (!retryable) throw error;
+
+                console.log(`${model} busy, attempt ${attempt}/${maxAttempts}`);
+                if (attempt < maxAttempts) {
+                    await new Promise((r) => setTimeout(r, attempt * 2000));
+                }
             }
         }
     }
+
+    throw new Error("All models are busy. Please try again in a minute.");
 }
 
 app.post("/ask", async (req, res) => {
