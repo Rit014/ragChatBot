@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -47,7 +48,7 @@ const App = () => {
     setDisplayedAnswer("");
 
     try {
-      const res = await axios.post("https://bookish-garbanzo-q77pvvvp9j6jc9wg4-3000.app.github.dev/ask", {
+      const res = await axios.post(`${API_URL}/ask`, {
         query: userQuery,
       });
       setAnswer(res.data.answer || "No answer returned.");
