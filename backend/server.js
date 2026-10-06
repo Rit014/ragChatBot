@@ -14,25 +14,6 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
-function buildAggragationPipeline(queryEmbedding) {
-    return [
-        {
-            $vectorSearch: {
-                queryVector: queryEmbedding,
-                path: "embedding",
-                numCandidates: 100,
-                limit: 10,
-                index: "vector_index_test",
-            },
-        },
-        {
-            $project: {
-                text: 1,
-                score: { $meta: "vectorSearchScore" },
-            },
-        },
-    ]
-}
 
 async function getAnswerFromLLM(query, context) {
     const models = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
