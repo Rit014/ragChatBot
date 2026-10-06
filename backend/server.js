@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import "dotenv/config";
 import { getCollection, connectToMongo } from './db.js';
 import { GoogleGenAI } from "@google/genai";
-
+import { buildAggragationPipeline } from './pipeline.js';
 
 connectToMongo();
 const app = express();
