@@ -2,6 +2,8 @@
 
 A chatbot that answers questions about insurance policies using **Retrieval-Augmented Generation (RAG)**. It finds the most relevant policy records with vector search and lets Gemini write the answer.
 
+   🔗 **Live demo:** https://rag-chat-bot-dp26.vercel.app/
+
 <img width="490" height="553" alt="image" src="https://github.com/user-attachments/assets/d2991d9d-3ca2-45db-8a88-13dffdd768fd" />
 <img width="464" height="528" alt="image" src="https://github.com/user-attachments/assets/1b73da7a-f3d3-4a10-b1d3-3c27968103e8" />
 
